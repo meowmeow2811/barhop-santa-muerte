@@ -93,7 +93,7 @@ function renderOlmeca() {
     <section class="section scroll-mt" id="olmeca">
       <div class="partner-box">
         <div class="partner-content">
-          <img src="/assets/logo/olmeca baza.png" alt="Olmeca" class="partner-image">
+          <img src="/assets/logo/olmeca_baza.png" alt="Olmeca" class="partner-image">
           <div>
             <div class="partner-logo">OLMECA</div>
             <h2 class="partner-title">Дух древней Мексики</h2>

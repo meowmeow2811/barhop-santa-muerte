@@ -1,0 +1,14 @@
+Пожалуйста, добавьте файлы шрифтов в эту папку.
+
+Для заголовков (Fibre Vintage Full):
+- FibreVintageFull.woff2
+- FibreVintageFull.otf
+- FibreVintageFull.ttf
+
+Для основного текста (Klyakson):
+- Klyakson.woff2
+- Klyakson.otf
+- Klyakson.ttf
+
+После добавления файлов шрифты автоматически применятся к приложению.
+В качестве временного решения (фолбэка) используются шрифты Oswald и Montserrat.

@@ -9,7 +9,7 @@ export const BARS: Bar[] = [
     mapUrl: 'https://2gis.kg/bishkek/firm/70000001089874516',
     festivalSpecial: 'Коктейль в мексиканском стиле',
     workingHours: 'каждый день с 18:00 до 02:00',
-    image: '/assets/logo/JUAN Logo.PNG'
+    image: '/assets/logo/juan_logo.png'
   },
   {
     id: 'riad',
@@ -19,7 +19,7 @@ export const BARS: Bar[] = [
     mapUrl: 'https://2gis.kg/bishkek/firm/70000001076790759',
     festivalSpecial: 'Специальный напиток фестиваля',
     workingHours: 'с 18:00 до 02:00 кроме понедельника',
-    image: '/assets/logo/riad logo.jpg'
+    image: '/assets/logo/riad_logo.jpg'
   },
   {
     id: 'viking',
@@ -29,6 +29,6 @@ export const BARS: Bar[] = [
     mapUrl: 'https://2gis.kg/bishkek/firm/70000001075002389',
     festivalSpecial: 'Викинг-спешл на базе текилы',
     workingHours: 'каждый день с 18:00 до 02:00',
-    image: '/assets/logo/Viking logo.JPG'
+    image: '/assets/logo/viking_logo.jpg'
   }
 ];
