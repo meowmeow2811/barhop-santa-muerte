@@ -417,20 +417,24 @@ h1, h2, h3 {
   filter: contrast(1.1);
 }
 
-/* Специальный стиль для логотипа Общества */
-.bar-card[data-bar-id="obshestvo"] .photo-frame {
+/* Специальный стиль для логотипа Общества и Викинга */
+.bar-card[data-bar-id="obshestvo"] .photo-frame,
+.bar-card[data-bar-id="viking"] .photo-frame {
   background-color: #000 !important;
 }
 
-.bar-card[data-bar-id="obshestvo"] .photo-frame::after {
+.bar-card[data-bar-id="obshestvo"] .photo-frame::after,
+.bar-card[data-bar-id="viking"] .photo-frame::after {
   border-color: #000 !important;
 }
 
-.bar-card[data-bar-id="obshestvo"] .photo-frame::before {
+.bar-card[data-bar-id="obshestvo"] .photo-frame::before,
+.bar-card[data-bar-id="viking"] .photo-frame::before {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.bar-card[data-bar-id="obshestvo"] .bar-card-logo {
+.bar-card[data-bar-id="obshestvo"] .bar-card-logo,
+.bar-card[data-bar-id="viking"] .bar-card-logo {
   filter: contrast(1.1) !important;
 }
 

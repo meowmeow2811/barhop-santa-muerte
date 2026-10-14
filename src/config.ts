@@ -33,16 +33,6 @@ const BARS: Bar[] = [
     image: '/assets/logo/viking_logo.jpg',
   },
   {
-    id: 'obshestvo',
-    name: 'Общество',
-    description: 'Пришёл в один бар, а там их два!',
-    address: 'ул. Жоомарта Боконбаева, 126/1',
-    mapUrl: 'https://2gis.kg/bishkek/firm/70000001089270819',
-    festivalSpecial: 'Авторский коктейль фестиваля',
-    workingHours: 'ПН-ЧТ 18:00-01:45, ПТ-СБ 17:00-02:45, ВС 17:00-01:45',
-    image: '/assets/logo/obshestvo_logo.png',
-  },
-  {
     id: 'blackwood',
     name: 'BlackWood',
     description: 'Не только коктейли, но и кальяны.',
@@ -51,6 +41,16 @@ const BARS: Bar[] = [
     festivalSpecial: 'Специальный напиток фестиваля',
     workingHours: 'с 18:00 до 03:00',
     image: '/assets/logo/Blackwood_logo.jpg',
+  },
+  {
+    id: 'obshestvo',
+    name: 'Общество',
+    description: 'Пришёл в один бар, а там их два!',
+    address: 'ул. Жоомарта Боконбаева, 126/1',
+    mapUrl: 'https://2gis.kg/bishkek/firm/70000001089270819',
+    festivalSpecial: 'Авторский коктейль фестиваля',
+    workingHours: 'ПН-ЧТ 18:00-01:45, ПТ-СБ 17:00-02:45, ВС 17:00-01:45',
+    image: '/assets/logo/obshestvo_logo.png',
   },
 ];
 export default BARS
