@@ -60,13 +60,22 @@ body {
   font-family: var(--font-main);
   line-height: 1.6;
   overflow-x: hidden;
+  position: relative;
+  width: 100%;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   min-height: -webkit-fill-available;
 }
 
+#app {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 html {
   height: -webkit-fill-available;
+  overflow-x: hidden;
 }
 
 h1, h2, h3 {
@@ -244,6 +253,36 @@ h1, h2, h3 {
   font-size: 1.1rem;
   margin-top: 30px;
   margin-bottom: 10px;
+}
+
+/* Conditions Section */
+.conditions-box {
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid var(--tertiary-color);
+  padding: 24px;
+  margin: 20px 0;
+  position: relative;
+  box-shadow: 6px 6px 0px var(--secondary-color);
+}
+
+.conditions-content p {
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.conditions-content strong {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.conditions-wish {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 20px !important;
+  color: var(--tertiary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /* Partner Section */
@@ -554,10 +593,10 @@ h1, h2, h3 {
     transform: scale(0.7);
   }
 
-  .flower-1 { left: -30px; top: 50px; }
-  .flower-2 { right: -30px; top: 400px; }
+  .flower-1 { left: -20px; top: 50px; }
+  .flower-2 { right: -20px; top: 400px; }
   .spark-small-1 { left: 0; }
-  .plant-1 { right: -30px; }
+  .plant-1 { right: -20px; }
 }
 
 @media (max-width: 380px) {
@@ -593,12 +632,13 @@ h1, h2, h3 {
   z-index: 1;
   pointer-events: none;
   filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+  max-width: 100vw;
 }
 
 .flower-1 {
   width: 60px;
   top: 100px;
-  left: -30px;
+  left: -20px;
   transform: rotate(-15deg);
   animation: sway 6s ease-in-out infinite;
 }
@@ -606,7 +646,7 @@ h1, h2, h3 {
 .flower-2 {
   width: 50px;
   top: 500px;
-  right: -25px;
+  right: -15px;
   transform: rotate(20deg);
   animation: sway 8s ease-in-out infinite reverse;
 }
@@ -614,14 +654,14 @@ h1, h2, h3 {
 .spark-small-1 {
   width: 40px;
   top: 800px;
-  left: 10px;
+  left: 5px;
   animation: float 4s ease-in-out infinite;
 }
 
 .plant-1 {
   width: 80px;
   bottom: 100px;
-  right: -20px;
+  right: -15px;
   opacity: 0.6;
   transform: rotate(10deg);
 }
@@ -646,14 +686,6 @@ h1, h2, h3 {
   animation: float 7s ease-in-out infinite reverse;
 }
 
-.story-deco-candle {
-  position: absolute;
-  width: 50px;
-  top: -25px;
-  right: 20px;
-  z-index: 5;
-  filter: drop-shadow(0 0 10px rgba(251, 173, 23, 0.5));
-}
 
 .footer-deco-flower {
   position: absolute;

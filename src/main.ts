@@ -133,6 +133,7 @@ function render() {
     ${renderHero()}
     <div class="container" style="position: relative;">
       ${renderDecorations()}
+      ${renderConditions()}
       ${renderStory()}
       ${renderOlmeca()}
       ${renderBars()}
@@ -169,7 +170,6 @@ function renderHero() {
 function renderStory() {
   return `
     <section class="section scroll-mt" id="story">
-      <img src="/assets/candle.png" class="story-deco-candle" alt="">
       <h2 class="section-title">История Dia de muertos</h2>
       <div class="story-content">
         <p>Dia de muertos (День мертвых) — это не просто праздник, это отражение мексиканского духа, где жизнь и смерть идут рука об руку, дополняя друг друга.</p>
@@ -178,7 +178,23 @@ function renderStory() {
         <p>В мексиканской традиции смерть не считается концом. Это переход, повод для памяти и уважения к корням. Наш бархоп вдохновлен этой философией: ценить каждый момент, наслаждаться вкусом и общением.</p>
         
         <h3>Культура и Память</h3>
-        <p>Мы объединили лучшие заведения Бишкека, чтобы создать уникальный маршрут, где каждый бар рассказывает свою часть истории, а каждый коктейль становится данью традиции.</p>
+        <p>Мы объединили заведения Бишкека, чтобы создать уникальный маршрут, где каждый бар рассказывает свою часть истории, а каждый коктейль становится данью традиции.</p>
+      </div>
+    </section>
+  `;
+}
+
+function renderConditions() {
+  return `
+    <section class="section scroll-mt" id="conditions">
+      <div class="conditions-box">
+        <h2 class="section-title">Условия BAR HOP</h2>
+        <div class="conditions-content">
+          <p>¡Bienvenidos на первый <strong>BAR HOP</strong> в Кыргызстане!</p>
+          <p>Раз вы здесь, значит, уже посетили один из <strong>5 баров-участников</strong>. Теперь пора отправиться в маленькое путешествие по культуре Día de Muertos через коктейли!</p>
+          <p>В каждом баре вас ждут <strong>2 авторских напитка</strong>. Пройдите все <strong>5 баров</strong>, попробуйте <strong>10 коктейлей</strong> и получите в награду <strong>limited мерч</strong> BAR HOP.</p>
+          <p class="conditions-wish">Не пуха, ни пера — и до встречи на маршруте!</p>
+        </div>
       </div>
     </section>
   `;
@@ -277,7 +293,7 @@ function renderFooter() {
       
       <div class="footer-quote">«Смерть — это всего лишь начало новой истории»</div>
       <a href="#bars" class="btn" style="background: var(--bg-color); color: var(--tertiary-color); box-shadow: 4px 4px 0px var(--secondary-color);">К барам-участникам</a>
-      <p style="margin-top: 40px; font-size: 0.7rem; color: var(--accent-color); opacity: 0.6;">
+      <p style="margin-top: 40px; font-size: 0.8rem; color: var(--secondary-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
         © 2026 DIA DE MUERTOS BARHOP 2026 BISHKEK<br>
         Чрезмерное употребление алкоголя вредит вашему здоровью
       </p>
