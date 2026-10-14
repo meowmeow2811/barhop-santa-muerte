@@ -1,31 +1,127 @@
 import './app.css';
-import { BARS } from './config';
+import BARS from './config';
 import { Bar } from './types';
 
 // Расширяем интерфейс Window для Telegram SDK
 declare global {
   interface Window {
     Telegram?: {
-      WebApp: any;
+      WebApp: {
+        ready: () => void;
+        expand: () => void;
+        close: () => void;
+        headerColor: string;
+        backgroundColor: string;
+        themeParams: {
+          bg_color?: string;
+          text_color?: string;
+          hint_color?: string;
+          link_color?: string;
+          button_color?: string;
+          button_text_color?: string;
+          secondary_bg_color?: string;
+        };
+        setHeaderColor: (color: string) => void;
+        setBackgroundColor: (color: string) => void;
+        enableClosingConfirmation: () => void;
+        HapticFeedback: {
+          impactOccurred: (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => void;
+          notificationOccurred: (type: 'error' | 'success' | 'warning') => void;
+          selectionChanged: () => void;
+        };
+        openLink: (url: string) => void;
+        onEvent: (eventType: string, eventHandler: () => void) => void;
+        MainButton: {
+          text: string;
+          color: string;
+          textColor: string;
+          isVisible: boolean;
+          isActive: boolean;
+          setText: (text: string) => void;
+          onClick: (callback: () => void) => void;
+          show: () => void;
+          hide: () => void;
+          enable: () => void;
+          disable: () => void;
+          setParams: (params: { color?: string; text_color?: string; text?: string; is_active?: boolean; is_visible?: boolean }) => void;
+        };
+      };
     };
   }
 }
 
-const tg = window.Telegram?.WebApp;
+// Инициализация Telegram WebApp SDK
+const getTelegramApp = () => window.Telegram?.WebApp;
 
 function initApp() {
+  const tg = getTelegramApp();
+  
   if (tg) {
-    tg.ready();
-    tg.expand();
-    
-    // Адаптация под тему Telegram
-    document.body.style.setProperty('--tg-theme-bg-color', tg.backgroundColor);
-    document.body.style.setProperty('--tg-theme-text-color', tg.textColor);
-    document.body.style.setProperty('--tg-theme-button-color', tg.buttonColor);
-    document.body.style.setProperty('--tg-theme-button-text-color', tg.buttonTextColor);
+    try {
+      tg.ready();
+      tg.expand();
+      tg.enableClosingConfirmation();
+      
+      applyTheme(tg);
+      
+      // Подписка на изменение темы
+      tg.onEvent('themeChanged', () => applyTheme(tg));
+
+      // Настройка системных цветов Mini App
+      tg.setHeaderColor('secondary_bg_color');
+      tg.setBackgroundColor('bg_color');
+
+      // Настройка главной кнопки
+      tg.MainButton.setText('ПОСМОТРЕТЬ МАРШРУТ');
+      tg.MainButton.setTextColor('#FFFFFF');
+      tg.MainButton.setParams({
+        color: '#4e7d17' // Темно-зеленый из палитры
+      });
+      tg.MainButton.show();
+      tg.MainButton.onClick(() => {
+        tg.HapticFeedback.impactOccurred('medium');
+        const target = document.querySelector('#bars');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    } catch (e) {
+      console.error('Ошибка инициализации Telegram SDK:', e);
+    }
   }
 
-  render();
+  try {
+    render();
+  } catch (e) {
+    console.error('Ошибка рендеринга приложения:', e);
+    const app = document.getElementById('app');
+    if (app) {
+      app.innerHTML = '<div style="padding: 20px; text-align: center;">Произошла ошибка при загрузке приложения. Пожалуйста, попробуйте открыть его в Telegram.</div>';
+    }
+  }
+}
+
+function applyTheme(tg: any) {
+  if (!tg) return;
+  
+  const theme = tg.themeParams;
+  const root = document.body;
+  
+  if (theme.bg_color) {
+    root.style.setProperty('--tg-theme-bg-color', theme.bg_color);
+  }
+  if (theme.text_color) {
+    root.style.setProperty('--tg-theme-text-color', theme.text_color);
+  }
+  if (theme.button_color) {
+    root.style.setProperty('--tg-theme-button-color', theme.button_color);
+  }
+  if (theme.button_text_color) {
+    root.style.setProperty('--tg-theme-button-text-color', theme.button_text_color);
+  }
+  if (theme.secondary_bg_color) {
+    root.style.setProperty('--tg-theme-secondary-bg-color', theme.secondary_bg_color);
+  }
 }
 
 function render() {
@@ -105,6 +201,7 @@ function renderOlmeca() {
   `;
 }
 
+
 function renderBars() {
   return `
     <section class="section scroll-mt" id="bars">
@@ -135,7 +232,7 @@ function renderBarCard(bar: Bar) {
     : `<button class="btn btn-small disabled">Адрес уточняется</button>`;
 
   return `
-    <div class="bar-card">
+    <div class="bar-card" data-bar-id="${bar.id}">
       <div class="bar-card-content">
         <div class="photo-frame">
           <img src="${bar.image || '/assets/plant.png'}" alt="${bar.name}" class="bar-card-logo">
@@ -193,24 +290,37 @@ function renderDecorations() {
   return `
     <img src="/assets/flower.png" class="deco flower-1" alt="">
     <img src="/assets/flower.png" class="deco flower-2" alt="">
-    <img src="/assets/spark_small.png" class="deco spark-small-1" alt="">
+    <img src="/assets/spark_medium.png" class="deco spark-small-1" alt="">
     <img src="/assets/plant.png" class="deco plant-1" alt="">
   `;
 }
 
 function setupEventListeners() {
+  const tg = getTelegramApp();
+  
   // Плавный скролл
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
-      const href = anchor.getAttribute('href');
-      if (!href) return;
       
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth'
-        });
+      if (tg) {
+        try {
+          tg.HapticFeedback.impactOccurred('light');
+        } catch (e) {}
+      }
+
+      const href = anchor.getAttribute('href');
+      if (!href || href === '#') return;
+      
+      try {
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      } catch (e) {
+        console.warn('Ошибка при переходе по ссылке:', e);
       }
     });
   });
@@ -218,10 +328,20 @@ function setupEventListeners() {
   // Обработка ссылок на карты
   document.querySelectorAll('.map-link').forEach(button => {
     button.addEventListener('click', function() {
+      if (tg) {
+        try {
+          tg.HapticFeedback.impactOccurred('medium');
+        } catch (e) {}
+      }
+
       const url = button.getAttribute('data-url');
       if (url) {
         if (tg) {
-          tg.openLink(url);
+          try {
+            tg.openLink(url);
+          } catch (e) {
+            window.open(url, '_blank');
+          }
         } else {
           window.open(url, '_blank');
         }
@@ -231,4 +351,8 @@ function setupEventListeners() {
 }
 
 // Запуск приложения
-document.addEventListener('DOMContentLoaded', initApp);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
