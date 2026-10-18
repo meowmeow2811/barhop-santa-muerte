@@ -73,9 +73,9 @@ function initApp() {
 
       // Настройка главной кнопки
       tg.MainButton.setText('ПОСМОТРЕТЬ МАРШРУТ');
-      tg.MainButton.setTextColor('#FFFFFF');
       tg.MainButton.setParams({
-        color: '#4e7d17' // Темно-зеленый из палитры
+        color: '#4e7d17', // Темно-зеленый из палитры
+        text_color: '#FFFFFF'
       });
       tg.MainButton.show();
       tg.MainButton.onClick(() => {
