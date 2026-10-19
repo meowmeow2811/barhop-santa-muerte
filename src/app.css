@@ -96,6 +96,50 @@ h1, h2, h3 {
   padding: 0 16px;
 }
 
+/* Language Switcher */
+.lang-switcher {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top));
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid var(--tertiary-color);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 3px 3px 0px var(--secondary-color);
+}
+
+.lang-opt {
+  cursor: pointer;
+  color: var(--tertiary-color);
+  transition: all 0.2s ease;
+  padding: 2px 4px;
+  display: inline-block;
+}
+
+.lang-opt.active {
+  color: var(--accent-color);
+  transform: scale(1.1);
+}
+
+.lang-divider {
+  color: var(--tertiary-color);
+  font-weight: 400;
+  opacity: 0.5;
+}
+
+.lang-opt:hover:not(.active) {
+  color: var(--accent-color);
+}
+
 /* Hero Section */
 .hero {
   min-height: 80vh;
@@ -275,6 +319,10 @@ h1, h2, h3 {
 .conditions-content strong {
   color: var(--accent-color);
   font-weight: 700;
+}
+
+.conditions-content .green-highlight {
+  color: var(--tertiary-color);
 }
 
 .conditions-content .conditions-wish {

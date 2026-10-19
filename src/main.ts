@@ -1,10 +1,12 @@
 import './app.css';
 import BARS from './config';
 import { Bar } from './types';
+import { Language, translations } from './i18n';
 
 // Расширяем интерфейс Window для Telegram SDK
 declare global {
   interface Window {
+    changeLanguage: (lang: Language) => void;
     Telegram?: {
       WebApp: {
         ready: () => void;
@@ -12,6 +14,11 @@ declare global {
         close: () => void;
         headerColor: string;
         backgroundColor: string;
+        initDataUnsafe?: {
+          user?: {
+            language_code?: string;
+          };
+        };
         themeParams: {
           bg_color?: string;
           text_color?: string;
@@ -53,8 +60,73 @@ declare global {
 // Инициализация Telegram WebApp SDK
 const getTelegramApp = () => window.Telegram?.WebApp;
 
+let currentLang: Language = 'ru';
+
+function getInitialLanguage(): Language {
+  try {
+    const saved = localStorage.getItem('app_lang') as Language;
+    if (saved && (saved === 'ru' || saved === 'en')) {
+      return saved;
+    }
+  } catch (e) {}
+  
+  const tg = getTelegramApp();
+  if (tg?.initDataUnsafe?.user?.language_code === 'en') {
+    return 'en';
+  }
+  
+  return 'ru';
+}
+
+function t(path: string): string {
+  const keys = path.split('.');
+  let result: any = translations[currentLang];
+  
+  for (const key of keys) {
+    if (result && result[key]) {
+      result = result[key];
+    } else {
+      // Fallback to RU
+      let fallback: any = translations['ru'];
+      for (const fKey of keys) {
+        if (fallback && fallback[fKey]) {
+          fallback = fallback[fKey];
+        } else {
+          return path;
+        }
+      }
+      return fallback;
+    }
+  }
+  return result;
+}
+
+window.changeLanguage = (lang: Language) => {
+  if (lang === currentLang) return;
+  
+  const tg = getTelegramApp();
+  if (tg) {
+    try {
+      tg.HapticFeedback.selectionChanged();
+    } catch (e) {}
+  }
+  
+  currentLang = lang;
+  try {
+    localStorage.setItem('app_lang', lang);
+  } catch (e) {}
+  
+  if (tg) {
+    tg.MainButton.setText(t('common.main_button'));
+  }
+  
+  render();
+};
+
 function initApp() {
   const tg = getTelegramApp();
+  
+  currentLang = getInitialLanguage();
   
   if (tg) {
     try {
@@ -72,7 +144,7 @@ function initApp() {
       tg.setBackgroundColor('bg_color');
 
       // Настройка главной кнопки
-      tg.MainButton.setText('ПОСМОТРЕТЬ МАРШРУТ');
+      tg.MainButton.setText(t('common.main_button'));
       tg.MainButton.setParams({
         color: '#4e7d17', // Темно-зеленый из палитры
         text_color: '#FFFFFF'
@@ -92,11 +164,11 @@ function initApp() {
 
   try {
     render();
-  } catch (e) {
+    } catch (e) {
     console.error('Ошибка рендеринга приложения:', e);
     const app = document.getElementById('app');
     if (app) {
-      app.innerHTML = '<div style="padding: 20px; text-align: center;">Произошла ошибка при загрузке приложения. Пожалуйста, попробуйте открыть его в Telegram.</div>';
+      app.innerHTML = `<div style="padding: 20px; text-align: center;">${t('common.error')}</div>`;
     }
   }
 }
@@ -130,6 +202,7 @@ function render() {
 
   app.innerHTML = `
     <div class="papel-picado" style="margin: 0; position: absolute; top: 0; left: 0; z-index: 10;"></div>
+    ${renderLanguageSwitcher()}
     ${renderHero()}
     <div class="container" style="position: relative;">
       ${renderDecorations()}
@@ -144,6 +217,16 @@ function render() {
   setupEventListeners();
 }
 
+function renderLanguageSwitcher() {
+  return `
+    <div class="lang-switcher">
+      <span class="lang-opt ${currentLang === 'ru' ? 'active' : ''}" onclick="window.changeLanguage('ru')">RU</span>
+      <span class="lang-divider">|</span>
+      <span class="lang-opt ${currentLang === 'en' ? 'active' : ''}" onclick="window.changeLanguage('en')">EN</span>
+    </div>
+  `;
+}
+
 function renderHero() {
   return `
     <section class="hero">
@@ -152,17 +235,17 @@ function renderHero() {
       
       <div class="hero-logo-container">
         <h1 class="hero-logo main">DIA DE MUERTOS</h1>
-        <h2 class="hero-logo sub">BARHOP 2026</h2>
+        <h2 class="hero-logo sub">${t('hero.logo_sub')}</h2>
       </div>
       
       <div class="hero-illustration">
         <img src="/assets/skull.png" alt="Dia de muertos" style="width: 100%; height: 100%; object-fit: contain;">
       </div>
 
-      <h2 class="hero-title">Мексиканская культура. Барная культура. Один маршрут.</h2>
-      <p class="hero-description">Погрузитесь в атмосферу мексиканского праздника в самом сердце Бишкека.</p>
+      <h2 class="hero-title">${t('hero.title')}</h2>
+      <p class="hero-description">${t('hero.description')}</p>
       
-      <a href="#bars" class="btn" id="explore-btn">Исследовать маршрут</a>
+      <a href="#bars" class="btn" id="explore-btn">${t('hero.explore_btn')}</a>
     </section>
   `;
 }
@@ -170,15 +253,15 @@ function renderHero() {
 function renderStory() {
   return `
     <section class="section scroll-mt" id="story">
-      <h2 class="section-title">История Dia de muertos</h2>
+      <h2 class="section-title">${t('story.title')}</h2>
       <div class="story-content">
-        <p>Dia de muertos (День мертвых) — это не просто праздник, это отражение мексиканского духа, где жизнь и смерть идут рука об руку, дополняя друг друга.</p>
+        <p>${t('story.p1')}</p>
         
-        <h3>Жизнь через край</h3>
-        <p>В мексиканской традиции смерть не считается концом. Это переход, повод для памяти и уважения к корням. Наш бархоп вдохновлен этой философией: ценить каждый момент, наслаждаться вкусом и общением.</p>
+        <h3>${t('story.h2')}</h3>
+        <p>${t('story.p2')}</p>
         
-        <h3>Культура и Память</h3>
-        <p>Мы объединили заведения Бишкека, чтобы создать уникальный маршрут, где каждый бар рассказывает свою часть истории, а каждый коктейль становится данью традиции.</p>
+        <h3>${t('story.h3')}</h3>
+        <p>${t('story.p3')}</p>
       </div>
     </section>
   `;
@@ -188,12 +271,12 @@ function renderConditions() {
   return `
     <section class="section scroll-mt" id="conditions">
       <div class="conditions-box">
-        <h2 class="section-title">Условия BAR HOP</h2>
+        <h2 class="section-title">${t('conditions.title')}</h2>
         <div class="conditions-content">
-          <p>¡Bienvenidos на первый <strong>BAR HOP</strong> в Кыргызстане!</p>
-          <p>Раз вы здесь, значит, уже посетили один из <strong>5 баров-участников</strong>. Теперь пора отправиться в маленькое путешествие по культуре Día de Muertos через коктейли!</p>
-          <p>В каждом баре вас ждут <strong>2 авторских напитка</strong>. Пройдите все <strong>5 баров</strong>, попробуйте <strong>10 коктейлей</strong> и получите в награду <strong>limited мерч</strong> BAR HOP.</p>
-          <p class="conditions-wish">Не пуха, ни пера — и до встречи на маршруте!</p>
+          <p>${t('conditions.p1')}</p>
+          <p>${t('conditions.p2')}</p>
+          <p>${t('conditions.p3')}</p>
+          <p class="conditions-wish">${t('conditions.wish')}</p>
         </div>
       </div>
     </section>
@@ -208,8 +291,8 @@ function renderOlmeca() {
           <img src="/assets/logo/olmeca_baza.png" alt="Olmeca" class="partner-image">
           <div>
             <div class="partner-logo">OLMECA</div>
-            <h2 class="partner-title">Дух древней Мексики</h2>
-            <p class="partner-desc">Текила Olmeca рождается в сердце региона Халиско. Она несет в себе энергию солнца и традиции предков.</p>
+            <h2 class="partner-title">${t('partner.title')}</h2>
+            <p class="partner-desc">${t('partner.desc')}</p>
           </div>
         </div>
       </div>
@@ -217,11 +300,10 @@ function renderOlmeca() {
   `;
 }
 
-
 function renderBars() {
   return `
     <section class="section scroll-mt" id="bars">
-      <h2 class="section-title">Маршрут</h2>
+      <h2 class="section-title">${t('bars.title')}</h2>
       <div class="bar-list">
         ${BARS.map((bar, index) => `
           ${renderBarCard(bar)}
@@ -243,35 +325,41 @@ function renderDivider() {
 }
 
 function renderBarCard(bar: Bar) {
+  const name = t(`bars.data.${bar.id}.name`);
+  const description = t(`bars.data.${bar.id}.description`);
+  const address = t(`bars.data.${bar.id}.address`);
+  const workingHours = t(`bars.data.${bar.id}.workingHours`);
+  const festivalSpecial = t(`bars.data.${bar.id}.festivalSpecial`);
+
   const mapButton = bar.mapUrl 
-    ? `<button class="btn btn-small map-link" data-url="${bar.mapUrl}">Открыть в 2ГИС</button>`
-    : `<button class="btn btn-small disabled">Адрес уточняется</button>`;
+    ? `<button class="btn btn-small map-link" data-url="${bar.mapUrl}">${t('bars.map_btn')}</button>`
+    : `<button class="btn btn-small disabled">${t('bars.address_tbd')}</button>`;
 
   return `
     <div class="bar-card" data-bar-id="${bar.id}">
       <div class="bar-card-content">
         <div class="photo-frame">
-          <img src="${bar.image || '/assets/plant.png'}" alt="${bar.name}" class="bar-card-logo">
+          <img src="${bar.image || '/assets/plant.png'}" alt="${name}" class="bar-card-logo">
         </div>
         <div class="bar-info">
-          <h3 class="bar-name">${bar.name}</h3>
-          <p class="bar-desc">${bar.description}</p>
+          <h3 class="bar-name">${name}</h3>
+          <p class="bar-desc">${description}</p>
           
           <div class="bar-details">
             <div class="bar-detail-item">
-              <span class="bar-detail-label">Где:</span>
-              <span>${bar.address}</span>
+              <span class="bar-detail-label">${t('bars.where')}</span>
+              <span>${address}</span>
             </div>
-            ${bar.workingHours ? `
+            ${workingHours ? `
               <div class="bar-detail-item">
-                <span class="bar-detail-label">Когда:</span>
-                <span>${bar.workingHours}</span>
+                <span class="bar-detail-label">${t('bars.when')}</span>
+                <span>${workingHours}</span>
               </div>
             ` : ''}
-            ${bar.festivalSpecial ? `
+            ${festivalSpecial ? `
               <div class="bar-detail-item">
-                <span class="bar-detail-label special-highlight">Спешл:</span>
-                <span class="special-highlight">${bar.festivalSpecial}</span>
+                <span class="bar-detail-label special-highlight">${t('bars.special')}</span>
+                <span class="special-highlight">${festivalSpecial}</span>
               </div>
             ` : ''}
           </div>
@@ -291,11 +379,11 @@ function renderFooter() {
       <img src="/assets/flower.png" class="footer-deco-flower" alt="">
       <div class="papel-picado" style="position: absolute; top: -10px; left: 0; background-image: url(&quot;data:image/svg+xml,%3Csvg width='40' height='20' viewBox='0 0 40 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L40 0 L40 10 Q20 20 0 10 Z' fill='%23d37353'/%3E%3C/svg%3E&quot;);"></div>
       
-      <div class="footer-quote">«Смерть — это всего лишь начало новой истории»</div>
-      <a href="#bars" class="btn" style="background: var(--bg-color); color: var(--tertiary-color); box-shadow: 4px 4px 0px var(--secondary-color);">К барам-участникам</a>
+      <div class="footer-quote">${t('footer.quote')}</div>
+      <a href="#bars" class="btn" style="background: var(--bg-color); color: var(--tertiary-color); box-shadow: 4px 4px 0px var(--secondary-color);">${t('footer.back_to_bars')}</a>
       <p style="margin-top: 40px; font-size: 0.8rem; color: var(--secondary-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
         © 2026 DIA DE MUERTOS BARHOP 2026 BISHKEK<br>
-        Чрезмерное употребление алкоголя вредит вашему здоровью
+        ${t('footer.warning')}
       </p>
     </footer>
   `;
