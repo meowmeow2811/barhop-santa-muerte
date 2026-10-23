@@ -19,6 +19,7 @@ export const translations = {
     },
     conditions: {
       title: 'Условия BAR HOP',
+      dates: 'Bar hop действует с 21 октября по 4 ноября 2026 года',
       p1: '¡Bienvenidos на первый <strong class="green-highlight">BAR HOP</strong> в Кыргызстане!',
       p2: 'Раз вы здесь, значит, уже посетили один <strong class="green-highlight">из 5 баров-участников</strong>. Теперь пора отправиться в маленькое путешествие по культуре Día de Muertos через коктейли!',
       p3: 'В каждом баре <strong class="green-highlight">вас ждут 2 авторских напитка</strong>. Пройдите <strong class="green-highlight">все 5 баров,</strong> <strong class="green-highlight">попробуйте 10 коктейлей</strong> и получите в награду <strong>limited мерч</strong> <strong class="green-highlight">BAR HOP</strong>.',
@@ -101,6 +102,7 @@ export const translations = {
     },
     conditions: {
       title: 'BAR HOP Conditions',
+      dates: 'Bar hop is active from October 21 to November 4, 2026',
       p1: '¡Bienvenidos to the first <strong class="green-highlight">BAR HOP</strong> in Kyrgyzstan!',
       p2: 'Since you\'re here, it means you\'ve already visited one <strong class="green-highlight">of the 5 participating bars</strong>. Now it\'s time to embark on a little journey through Día de Muertos culture through cocktails!',
       p3: 'In each bar, <strong class="green-highlight">2 signature drinks await you</strong>. Visit <strong class="green-highlight">all 5 bars,</strong> <strong class="green-highlight">try 10 cocktails</strong> and receive a reward of <strong>limited</strong> <strong class="green-highlight">BAR HOP</strong> <strong>merch</strong>.',

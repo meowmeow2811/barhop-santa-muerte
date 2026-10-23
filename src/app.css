@@ -309,6 +309,16 @@ h1, h2, h3 {
   box-shadow: 6px 6px 0px var(--secondary-color);
 }
 
+.conditions-dates {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--tertiary-color);
+  text-align: center;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .conditions-content p {
   margin-bottom: 12px;
   font-size: 0.95rem;

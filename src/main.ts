@@ -271,6 +271,7 @@ function renderConditions() {
   return `
     <section class="section scroll-mt" id="conditions">
       <div class="conditions-box">
+        <div class="conditions-dates">${t('conditions.dates')}</div>
         <h2 class="section-title">${t('conditions.title')}</h2>
         <div class="conditions-content">
           <p>${t('conditions.p1')}</p>
